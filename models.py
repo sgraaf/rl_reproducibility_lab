@@ -22,7 +22,7 @@ class PolicyNetwork(nn.Module):
 
 class ValueNetwork(nn.Module):
     
-    def __init__(self, input_dim=2, hidden_dim=64, output_dim=1):
+    def __init__(self, input_dim=2, hidden_dim=128, output_dim=1):
         super(ValueNetwork, self).__init__()
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
