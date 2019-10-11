@@ -51,12 +51,25 @@ def plot_episodes_durations_losses(episode_durations, policy_losses, value_losse
             plt.legend()
 
 
-def select_action(model, state, epoch, grid_shape):
+def select_action(model, state, epoch, grid_shape, init_temperature=1.1):
+    """
+    Samples an action according to the probability distribution induced by the model
+    Also returns the log_probability
+    """
     state = np.unravel_index(state, grid_shape)
     log_p = model(torch.FloatTensor(state))
     
-    action = torch.multinomial(torch.exp(log_p), 1).item()
-        
+    # now add the temperature for making some exploration.
+    decay_exploration_epochs = 50
+    temperature = 1
+    if epoch < decay_exploration_epochs:
+        temperature = init_temperature - (init_temperature-temperature)*(epoch/decay_exploration_epochs)
+
+    probs = log_p.div(temperature)
+    probs = torch.exp(probs)
+    probs = probs / torch.sum(probs)
+    action = torch.multinomial(probs, 1).item()
+
     return action, log_p[action]
 
 
