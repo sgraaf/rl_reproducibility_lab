@@ -31,7 +31,7 @@ def plot_episodes_durations_losses(episode_durations, policy_losses, value_losse
         plt.title(f'Duration per Episode for {title}')
         plt.xlabel('# Episodes')
         plt.ylabel('# Steps to Termination')
-        plt.legend()
+        #plt.legend()
 
     plt.figure()
     for i in range(N):
@@ -39,7 +39,7 @@ def plot_episodes_durations_losses(episode_durations, policy_losses, value_losse
         plt.title(f'Policy loss per Episode for {title}')
         plt.xlabel('# Episodes')
         plt.ylabel('Loss')
-        plt.legend()
+        #plt.legend()
 
     if value_losses:
         plt.figure()
@@ -48,16 +48,19 @@ def plot_episodes_durations_losses(episode_durations, policy_losses, value_losse
             plt.title(f'Value loss per Episode for {title}')
             plt.xlabel('# Episodes')
             plt.ylabel('Loss')
-            plt.legend()
+            #plt.legend()
 
 
-def select_action(model, state, epoch, grid_shape, init_temperature=1.1):
+def select_action(model, state, epoch, env, init_temperature=1.1, stochasticity=0):
     """
     Samples an action according to the probability distribution induced by the model
     Also returns the log_probability
     """
-    state = np.unravel_index(state, grid_shape)
+    state = np.unravel_index(state, env.shape)
     log_p = model(torch.FloatTensor(state))
+    
+    # Draw the probability that the environment makes an random move.
+    stochastic_transition_prob = np.random.uniform()
     
     # now add the temperature for making some exploration.
     decay_exploration_epochs = 50
@@ -69,11 +72,16 @@ def select_action(model, state, epoch, grid_shape, init_temperature=1.1):
     probs = torch.exp(probs)
     probs = probs / torch.sum(probs)
     action = torch.multinomial(probs, 1).item()
+    action_log_p = log_p[action]
+    
+    # Replace the drawn action by a random one in case the stochastic environment is active.
+    if stochastic_transition_prob < stochasticity:
+        action = numpy.random.randint(0, env.nA)
 
-    return action, log_p[action]
+    return action, action_log_p
 
 
-def run_episode(env, model, epoch, grid_shape):
+def run_episode(env, model, epoch, init_temperature, stochasticity):
     episode = []
     
     s = env.reset()
@@ -83,7 +91,7 @@ def run_episode(env, model, epoch, grid_shape):
     
     while not done and step < max_steps:
         
-        a, log_p = select_action(model, s, epoch, grid_shape)
+        a, log_p = select_action(model, s, epoch, env, init_temperature, stochasticity)
         s_next, r, done, _ = env.step(a)
         
         episode.append((s, a, log_p, s_next, r))
@@ -95,7 +103,7 @@ def run_episode(env, model, epoch, grid_shape):
     return episode
 
 
-def sample_greedy_return(model, env, discount_factor, grid_shape, s=None):
+def sample_greedy_return(model, env, discount_factor, s=None):
     
     if s is None:
         s = env.reset()
@@ -110,7 +118,7 @@ def sample_greedy_return(model, env, discount_factor, grid_shape, s=None):
     
     while not done and step < max_steps:
         
-        state = np.unravel_index(s, grid_shape)
+        state = np.unravel_index(s, env.shape)
         log_p = model(torch.FloatTensor(state))
         
         greedy_a =  log_p.max(0)[1].item()
@@ -132,7 +140,8 @@ def compare_baselines_plot(baselines_dict):
         std = np.std(baselines_dict[baseline]['episode_durations'], axis=0)
 
         plt.plot(smooth(mean, 10), label=baseline, color=baselines_dict[baseline]['color'])
-        plt.fill_between(range(len(smooth(mean, 10))), smooth(mean, 10) - smooth(std, 10), smooth(mean, 10) + smooth(std, 10), color=baselines_dict[baseline]['color'], alpha=0.2)
+        plt.fill_between(range(len(smooth(mean, 10))), smooth(mean, 10) - smooth(std, 10), smooth(mean, 10) + smooth(std, 10),
+                         color=baselines_dict[baseline]['color'], alpha=0.2)
 
     plt.title('Mean episode duration per Episode')
     plt.xlabel('# Episodes')
@@ -142,11 +151,12 @@ def compare_baselines_plot(baselines_dict):
     # policy losses
     plt.figure()
     for baseline in baselines_dict:
-        mean = np.mean(baselines_dict[baseline]['policy_loss'], axis=0)
-        std = np.std(baselines_dict[baseline]['policy_loss'], axis=0)
+        mean = np.mean(baselines_dict[baseline]['policy_losses'], axis=0)
+        std = np.std(baselines_dict[baseline]['policy_losses'], axis=0)
 
         plt.plot(smooth(mean, 10), label=baseline, color=baselines_dict[baseline]['color'])
-        plt.fill_between(range(len(smooth(mean, 10))), smooth(mean, 10) - smooth(std, 10), smooth(mean, 10) + smooth(std, 10), color=baselines_dict[baseline]['color'], alpha=0.2)
+        plt.fill_between(range(len(smooth(mean, 10))), smooth(mean, 10) - smooth(std, 10), smooth(mean, 10) + smooth(std, 10),
+                         color=baselines_dict[baseline]['color'], alpha=0.2)
 
     plt.title('Mean policy loss per Episode')
     plt.xlabel('# Episodes')

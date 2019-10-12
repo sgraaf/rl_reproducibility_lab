@@ -3,7 +3,7 @@ from torch import nn
 
 class PolicyNetwork(nn.Module):
     
-    def __init__(self, input_dim=2, hidden_dim=64, output_dim=4):
+    def __init__(self, input_dim=2, hidden_dim=128, output_dim=4):
         super(PolicyNetwork, self).__init__()
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
