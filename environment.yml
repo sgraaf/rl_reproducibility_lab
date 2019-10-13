@@ -13,5 +13,6 @@ dependencies:
   - jupyter=1.0.0
   - tqdm=4.36.1
   - pytorch=1.2.0
+  - hyperopt=0.1.2
   - pip:
     - gym==0.12.5
