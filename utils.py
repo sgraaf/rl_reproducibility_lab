@@ -88,8 +88,8 @@ def run_episode(env, model, epoch, init_temperature, stochasticity):
     s = env.reset()
     done = False
     step = 0
-    max_steps = 50
-    
+    max_steps = 200
+        
     while not done and step < max_steps:
         
         a, log_p = select_action(model, s, epoch, env, init_temperature, stochasticity)
@@ -114,7 +114,7 @@ def sample_greedy_return(model, env, discount_factor, state=None):
     
     done = False
     step = 0
-    max_steps = 50
+    max_steps = 200
     greedy_return = 0
     
     while not done and step < max_steps:
