@@ -8,9 +8,9 @@ from utils import get_running_time, set_seeds
 from run_loss_functions import run_episodes_no_baseline, run_episodes_with_learned_baseline, run_episodes_with_SC_baseline
 
 discount_factors = [0.98, 0.985, 0.99]
-learn_rates = [1e-2, 1e-3, 1e-4, 1e-5]
-hidden_dims = [32, 64, 128, 256, 512]
-init_temps = [1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3]
+learn_rates = [1e-2, 1e-3, 1e-4]
+hidden_dims = [64, 128, 256]
+init_temps = [1.05, 1.1, 1.15]
 
 stochasticity = 0.0  # change this!
 n_runs = 5
