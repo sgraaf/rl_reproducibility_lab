@@ -1,0 +1,13 @@
+no baseline:
+best loss: 23.294600000000003
+best run: {'discount_factor': 0.9938676874710229, 'init_temp': 1.027723273998977, 'learn_rate': 0.007976827811251579, 'policy_hiddens': 126.0}
+
+
+learned baseline:
+best loss: 19.158]
+{'discount_factor': 0.647071681428065, 'init_temp': 1.2596473865694633, 'learn_rate_policy': 0.018586133751161277, 'learn_rate_value': 0.042350789942983476, 'policy_hiddens': 32.0, 'value_hiddens': 320.0}
+
+
+SC baseline:
+best loss: 16.136400000000002
+{'discount_factor': 0.07521215228230624, 'init_temp': 1.3015335168356854, 'learn_rate_policy': 0.006756669541469224, 'policy_hiddens': 218.0}
