@@ -65,8 +65,9 @@ for discount_factor in discount_factors:
                 print(f'Average number of episodes: {result}')
 
                 if result > best_result:
-                    print(f'New best result!: {result}')
+                    best_result = result
                     best_settings = (discount_factor, learn_rate, hidden_dim, init_temp)
+                    print(f'New best result!: {result}')
                     print(f'New best settings!: {best_settings}')
                 print()
 
