@@ -56,7 +56,8 @@ def select_action(model, state, epoch, env, init_temperature=1.1, stochasticity=
     Samples an action according to the probability distribution induced by the model
     Also returns the log_probability
     """
-    state = np.unravel_index(state, env.shape)
+    # print(state.shape, state)
+    # state = np.unravel_index(state, env.shape)
     log_p = model(torch.FloatTensor(state))
     
     # Draw the probability that the environment makes an random move.
@@ -103,13 +104,13 @@ def run_episode(env, model, epoch, init_temperature, stochasticity):
     return episode
 
 
-def sample_greedy_return(model, env, discount_factor, s=None):
+def sample_greedy_return(model, env, discount_factor, state=None):
     
-    if s is None:
-        s = env.reset()
+    if state is None:
+        state = env.reset()
     else:
         _ = env.reset()
-        env.s = s
+        env.state = state
     
     done = False
     step = 0
@@ -117,8 +118,7 @@ def sample_greedy_return(model, env, discount_factor, s=None):
     greedy_return = 0
     
     while not done and step < max_steps:
-        
-        state = np.unravel_index(s, env.shape)
+        # state = np.unravel_index(s, env.shape)
         log_p = model(torch.FloatTensor(state))
         
         greedy_a =  log_p.max(0)[1].item()
