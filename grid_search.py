@@ -14,7 +14,7 @@ init_temps = [1.05, 1.1, 1.15]
 
 stochasticity = 0.0  # change this!
 n_runs = 5
-n_episodes = 1000
+n_episodes = 750
 best_result = 0
 
 for discount_factor in discount_factors:
