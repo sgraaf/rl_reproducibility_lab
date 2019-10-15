@@ -23,8 +23,8 @@ def run_learned_baseline(discount_factors, learn_rates, hidden_dims, init_temps,
     # learned baseline
     best_result = 0
     best_settings = dict()
-    results_file = 'results/learned_baseline.csv'
-    best_settings_file = 'results/learned_baseline_best_settings.pkl'
+    results_file = f'results/s{stochasticity}_learned_baseline.csv'
+    best_settings_file = f'results/s{stochasticity}_llearned_baseline_best_settings.pkl'
 
     with open(results_file, 'w') as f:
         f.write('discount_factor,learn_rate_policy,learn_rate_value,hidden_dim_policy,hidden_dim_value,init_temp,result' + '\n')
@@ -115,8 +115,8 @@ def run_selfcritic_baseline(discount_factors, learn_rates, hidden_dims, init_tem
     # self-critic baseline
     best_result = 0
     best_settings = dict()
-    results_file = 'results/SC_baseline.csv'
-    best_settings_file = 'results/SC_baseline_best_settings.pkl'
+    results_file = f'results/s{stochasticity}_SC_baseline.csv'
+    best_settings_file = f'results/s{stochasticity}_SC_baseline_best_settings.pkl'
 
     with open(results_file, 'w') as f:
         f.write('discount_factor,learn_rate,hidden_dim,init_temp,result' + '\n')
@@ -201,8 +201,8 @@ def run_no_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stoc
     # no baseline
     best_result = 0
     best_settings = dict()
-    results_file = 'results/no_baseline.csv'
-    best_settings_file = 'results/no_baseline_best_settings.pkl'
+    results_file = f'results/s{stochasticity}_no_baseline.csv'
+    best_settings_file = f'results/s{stochasticity}_no_baseline_best_settings.pkl'
 
     with open(results_file, 'w') as f:
         f.write('discount_factor,learn_rate,hidden_dim,init_temp,result' + '\n')
