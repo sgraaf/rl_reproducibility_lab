@@ -13,9 +13,8 @@ from run_loss_functions import run_episodes_no_baseline, run_episodes_with_learn
 stochasticity = 0.15  # <---------- change this!
 n_runs = 5 # <---------- change this after you made sure it works (you created the nec. folders for the results)!
 n_episodes = 750
-grid_shape = [10, 10]
 
-def run_learned_baseline(stochasticity, n_runs, n_episodes, grid_shape):
+def run_learned_baseline(stochasticity, n_runs, n_episodes):
     # learned baseline
     dir_path = os.path.dirname(os.path.realpath(__file__))
     best_settings_file = dir_path+f'/cart_pole_parameter_search/s{stochasticity}_learned_baseline_best_settings.pkl'
@@ -90,7 +89,7 @@ def run_learned_baseline(stochasticity, n_runs, n_episodes, grid_shape):
     print(f'Done with run in {f"{h} hours, " if h else ""}{f"{m} minutes and " if m else ""}{s} seconds')
 
 
-def run_selfcritic_baseline(stochasticity, n_runs, n_episodes, grid_shape):         
+def run_selfcritic_baseline(stochasticity, n_runs, n_episodes):         
     # self-critic baseline
     dir_path = os.path.dirname(os.path.realpath(__file__))
     best_settings_file = dir_path+f'/cart_pole_parameter_search/s{stochasticity}_SC_baseline_best_settings.pkl'
@@ -155,7 +154,7 @@ def run_selfcritic_baseline(stochasticity, n_runs, n_episodes, grid_shape):
     print(f'Done with runs in {f"{h} hours, " if h else ""}{f"{m} minutes and " if m else ""}{s} seconds')
 
 
-def run_no_baseline(stochasticity, n_runs, n_episodes, grid_shape):
+def run_no_baseline(stochasticity, n_runs, n_episodes):
     # no baseline
     dir_path = os.path.dirname(os.path.realpath(__file__))
     best_settings_file = dir_path+f'/cart_pole_parameter_search/s{stochasticity}_no_baseline_best_settings.pkl'
@@ -220,6 +219,6 @@ def run_no_baseline(stochasticity, n_runs, n_episodes, grid_shape):
     print(f'Done with runs in {f"{h} hours, " if h else ""}{f"{m} minutes and " if m else ""}{s} seconds')
 
 # Choose what you want to run by uncommenting
-#run_no_baseline(stochasticity, n_runs, n_episodes, grid_shape)
-#run_learned_baseline(stochasticity, n_runs, n_episodes, grid_shape)
-#run_selfcritic_baseline(stochasticity, n_runs, n_episodes, grid_shape)
+#run_no_baseline(stochasticity, n_runs, n_episodes)
+#run_learned_baseline(stochasticity, n_runs, n_episodes)
+#run_selfcritic_baseline(stochasticity, n_runs, n_episodes)
