@@ -25,7 +25,7 @@ def run_learned_baseline(discount_factors, learn_rates, hidden_dims, init_temps,
     best_result = np.inf
     best_settings = dict()
     results_file = f'grid_results/s{stochasticity}_learned_baseline.csv'
-    best_settings_file = f'grid_results/s{stochasticity}_llearned_baseline_best_settings.pkl'
+    best_settings_file = f'grid_results/s{stochasticity}_learned_baseline_best_settings.pkl'
 
     with open(results_file, 'w') as f:
         f.write('discount_factor,learn_rate_policy,learn_rate_value,hidden_dim_policy,hidden_dim_value,init_temp,result' + '\n')
@@ -101,6 +101,8 @@ def run_learned_baseline(discount_factors, learn_rates, hidden_dims, init_temps,
                                 best_settings['hidden_dim_value'] = hidden_dim_value
                                 best_settings['init_temp'] = init_temp
                                 best_settings['result'] = best_result
+                                  
+                                pkl.dump(best_settings, open(best_settings_file, 'wb'))
 
                                 print(f'New best result!: {result}')
                                 print(f'New best settings!: {best_settings}')
