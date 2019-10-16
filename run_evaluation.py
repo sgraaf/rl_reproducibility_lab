@@ -1,6 +1,7 @@
 from time import time
 import pickle as pkl
 
+import os 
 import gym
 import numpy as np
 
@@ -9,15 +10,16 @@ from models import PolicyNetwork, ValueNetwork
 from utils import get_running_time, set_seeds
 from run_loss_functions import run_episodes_no_baseline, run_episodes_with_learned_baseline, run_episodes_with_SC_baseline
 
-stochasticity = 0.0  # <---------- change this!
+stochasticity = 0.15  # <---------- change this!
 n_runs = 5
 n_episodes = 750
 grid_shape = [10, 10]
 
 def run_learned_baseline(stochasticity, n_runs, n_episodes, grid_shape):
     # learned baseline
-    best_settings_file = f'cartpole_results/s{stochasticity}_learned_baseline_best_settings.pkl'
-    eval_file = f'grid_evals/s{stochasticity}_learned_baseline.pkl'
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    best_settings_file = dir_path+f'/cart_pole_parameter_search/s{stochasticity}_learned_baseline_best_settings.pkl'
+    eval_file = f'cart_evals/s{stochasticity}_learned_baseline.pkl'
 
     with open(best_settings_file, 'rb') as pickle_file:
         best_settings = pkl.load(pickle_file)
@@ -90,8 +92,9 @@ def run_learned_baseline(stochasticity, n_runs, n_episodes, grid_shape):
 
 def run_selfcritic_baseline(stochasticity, n_runs, n_episodes, grid_shape):         
     # self-critic baseline
-    best_settings_file = f'cartpole_results/s{stochasticity}_SC_baseline_best_settings.pkl'
-    eval_file = f'grid_evals/s{stochasticity}_SC_baseline.pkl'
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    best_settings_file = dir_path+f'/cart_pole_parameter_search/s{stochasticity}_SC_baseline_best_settings.pkl'
+    eval_file = f'cart_evals/s{stochasticity}_SC_baseline.pkl'
 
     with open(best_settings_file, 'rb') as pickle_file:
         best_settings = pkl.load(pickle_file)
@@ -154,8 +157,9 @@ def run_selfcritic_baseline(stochasticity, n_runs, n_episodes, grid_shape):
 
 def run_no_baseline(stochasticity, n_runs, n_episodes, grid_shape):
     # no baseline
-    best_settings_file = f'cartpole_results/s{stochasticity}_no_baseline_best_settings.pkl'
-    eval_file = f'grid_evals/s{stochasticity}_no_baseline_.pkl'
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    best_settings_file = dir_path+f'/cart_pole_parameter_search/s{stochasticity}_no_baseline_best_settings.pkl'
+    eval_file = f'cart_evals/s{stochasticity}_no_baseline_.pkl'
 
     with open(best_settings_file, 'rb') as pickle_file:
         best_settings = pkl.load(pickle_file)
@@ -182,7 +186,7 @@ def run_no_baseline(stochasticity, n_runs, n_episodes, grid_shape):
         seed = 40 + i
         set_seeds(env, seed)
 
-        episode_durations, _ = run_episodes_no_baseline( 
+        episode_durations, reinforce_loss = run_episodes_no_baseline( 
             policy_model,
             env,
             n_episodes,
@@ -207,13 +211,15 @@ def run_no_baseline(stochasticity, n_runs, n_episodes, grid_shape):
     et = time()
     h, m, s = get_running_time(et - st)
 
-    print(f'Done with runs in {f"{h} hours, " if h else ""}{f"{m} minutes and " if m else ""}{s} seconds')
-
     evals = {}
     evals['episode_durations'] = episode_durations_list
     evals['reinforce_loss'] = reinforce_loss_list
 
+    pkl.dump(evals, open(eval_file, 'wb'))
+
+    print(f'Done with runs in {f"{h} hours, " if h else ""}{f"{m} minutes and " if m else ""}{s} seconds')
+
 # Choose what you want to run by uncommenting
-#run_no_baseline(stochasticity, n_runs, n_episodes, grid_shape)
+run_no_baseline(stochasticity, n_runs, n_episodes, grid_shape)
 #run_learned_baseline(stochasticity, n_runs, n_episodes, grid_shape)
 #run_selfcritic_baseline(stochasticity, n_runs, n_episodes, grid_shape)
