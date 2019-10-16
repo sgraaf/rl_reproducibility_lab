@@ -57,7 +57,7 @@ def select_action(model, state, epoch, env, init_temperature=1.1, stochasticity=
     Also returns the log_probability
     """
     # print(state.shape, state)
-    # state = np.unravel_index(state, env.shape)
+    state = np.unravel_index(state, env.shape)
     log_p = model(torch.FloatTensor(state))
     
     # Draw the probability that the environment makes an random move.
@@ -77,7 +77,7 @@ def select_action(model, state, epoch, env, init_temperature=1.1, stochasticity=
     
     # Replace the drawn action by a random one in case the stochastic environment is active.
     if stochastic_transition_prob < stochasticity:
-        action = np.random.randint(0, 2)
+        action = np.random.randint(0, env.nA)
 
     return action, action_log_p
 
@@ -88,7 +88,7 @@ def run_episode(env, model, epoch, init_temperature, stochasticity):
     s = env.reset()
     done = False
     step = 0
-    max_steps = 200
+    max_steps = 30
         
     while not done and step < max_steps:
         
@@ -105,24 +105,22 @@ def run_episode(env, model, epoch, init_temperature, stochasticity):
 
 
 def sample_greedy_return(model, env, discount_factor, state=None):
-    
     if state is None:
         state = env.reset()
     else:
         _ = env.reset()
-        env.state = state
+        env.s = state
     
     done = False
     step = 0
-    max_steps = 200
+    max_steps = 30
     greedy_return = 0
     
     while not done and step < max_steps:
-        # state = np.unravel_index(s, env.shape)
+        state = np.unravel_index(state, env.shape)
         log_p = model(torch.FloatTensor(state))
-        
         greedy_a =  log_p.max(0)[1].item()
-        s, reward, done, _ = env.step(greedy_a)
+        state, reward, done, _ = env.step(greedy_a)
         
         greedy_return = reward + discount_factor * greedy_return
         

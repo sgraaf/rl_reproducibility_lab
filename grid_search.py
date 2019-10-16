@@ -15,16 +15,17 @@ learn_rates = [1e-2, 1e-3, 1e-4]
 hidden_dims = [64, 128, 256]
 init_temps = [1.05, 1.1, 1.15]
 
-stochasticity = 0.15  # <---------- change this!
+stochasticity = 0.0  # <---------- change this!
 n_runs = 5
 n_episodes = 750
+grid_shape = [10, 10]
 
-def run_learned_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes):
+def run_learned_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes, grid_shape):
     # learned baseline
-    best_result = 0
+    best_result = np.inf
     best_settings = dict()
-    results_file = f'results/s{stochasticity}_learned_baseline.csv'
-    best_settings_file = f'results/s{stochasticity}_llearned_baseline_best_settings.pkl'
+    results_file = f'grid_results/s{stochasticity}_learned_baseline.csv'
+    best_settings_file = f'grid_results/s{stochasticity}_llearned_baseline_best_settings.pkl'
 
     with open(results_file, 'w') as f:
         f.write('discount_factor,learn_rate_policy,learn_rate_value,hidden_dim_policy,hidden_dim_value,init_temp,result' + '\n')
@@ -46,15 +47,15 @@ def run_learned_baseline(discount_factors, learn_rates, hidden_dims, init_temps,
                             print(f'Search settings: baseline=run_episodes_with_learned_baseline, discount_factor={discount_factor}, learn_rate_policy={learn_rate_policy}, learn_rate_value={learn_rate_value}, hidden_dim_policy={hidden_dim_policy}, hidden_dim_value={hidden_dim_value}, init_temp={init_temp}')
 
                             # initialize the environment
-                            env = gym.make('CartPole-v1') 
+                            env = GridworldEnv(shape=grid_shape) 
 
                             result = 0
 
                             for i in range(n_runs):
                                 start_time = time()
 
-                                policy_model = PolicyNetwork(input_dim=4, hidden_dim=hidden_dim_policy, output_dim=2)  # change input_ and output_dim for gridworld env
-                                value_model = ValueNetwork(input_dim=4, hidden_dim=hidden_dim_value)  # change input_dim for gridworld env
+                                policy_model = PolicyNetwork(input_dim=2, hidden_dim=hidden_dim_policy, output_dim=4)  # change input_ and output_dim for gridworld env
+                                value_model = ValueNetwork(input_dim=2, hidden_dim=hidden_dim_value)  # change input_dim for gridworld env
                                 seed = 40 + i
                                 set_seeds(env, seed)
 
@@ -91,7 +92,7 @@ def run_learned_baseline(discount_factors, learn_rates, hidden_dims, init_temps,
                             print(f'Done with search in {f"{h} hours, " if h else ""}{f"{m} minutes and " if m else ""}{s} seconds')
                             print(f'Average number of steps per episode: {result}')
 
-                            if result > best_result:
+                            if result < best_result:
                                 best_result = result
                                 best_settings['discount_factor'] = discount_factor
                                 best_settings['learn_rate_policy'] = learn_rate_policy
@@ -111,12 +112,12 @@ def run_learned_baseline(discount_factors, learn_rates, hidden_dims, init_temps,
     print(f'Best settings after completing grid search: {best_settings}')
 
 
-def run_selfcritic_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes):         
+def run_selfcritic_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes, grid_shape):         
     # self-critic baseline
-    best_result = 0
+    best_result = np.inf
     best_settings = dict()
-    results_file = f'results/s{stochasticity}_SC_baseline.csv'
-    best_settings_file = f'results/s{stochasticity}_SC_baseline_best_settings.pkl'
+    results_file = f'grid_results/s{stochasticity}_SC_baseline.csv'
+    best_settings_file = f'grid_results/s{stochasticity}_SC_baseline_best_settings.pkl'
 
     with open(results_file, 'w') as f:
         f.write('discount_factor,learn_rate,hidden_dim,init_temp,result' + '\n')
@@ -136,14 +137,14 @@ def run_selfcritic_baseline(discount_factors, learn_rates, hidden_dims, init_tem
                     print(f'Search settings: baseline=run_episodes_with_SC_baseline, discount_factor={discount_factor}, learn_rate={learn_rate}, hidden_dim={hidden_dim}, init_temp={init_temp}')
 
                     # initialize the environment
-                    env = gym.make('CartPole-v1') 
+                    env = GridworldEnv(shape=grid_shape) 
 
                     result = 0
 
                     for i in range(n_runs):
                         start_time = time()
 
-                        policy_model = PolicyNetwork(input_dim=4, hidden_dim=hidden_dim, output_dim=2)  # change input_ and output_dim for gridworld env
+                        policy_model = PolicyNetwork(input_dim=2, hidden_dim=hidden_dim, output_dim=4)  # change input_ and output_dim for gridworld env
                         seed = 40 + i
                         set_seeds(env, seed)
 
@@ -177,7 +178,7 @@ def run_selfcritic_baseline(discount_factors, learn_rates, hidden_dims, init_tem
                     print(f'Done with search in {f"{h} hours, " if h else ""}{f"{m} minutes and " if m else ""}{s} seconds')
                     print(f'Average number of steps per episode: {result}')
 
-                    if result > best_result:
+                    if result < best_result:
                         best_result = result
                         best_settings['discount_factor'] = discount_factor
                         best_settings['learn_rate'] = learn_rate
@@ -197,12 +198,12 @@ def run_selfcritic_baseline(discount_factors, learn_rates, hidden_dims, init_tem
     print(f'Best settings after completing grid search: {best_settings}')
                       
 
-def run_no_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes):
+def run_no_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes, grid_shape):
     # no baseline
-    best_result = 0
+    best_result = np.inf
     best_settings = dict()
-    results_file = f'results/s{stochasticity}_no_baseline.csv'
-    best_settings_file = f'results/s{stochasticity}_no_baseline_best_settings.pkl'
+    results_file = f'grid_results/s{stochasticity}_no_baseline.csv'
+    best_settings_file = f'grid_results/s{stochasticity}_no_baseline_best_settings.pkl'
 
     with open(results_file, 'w') as f:
         f.write('discount_factor,learn_rate,hidden_dim,init_temp,result' + '\n')
@@ -222,14 +223,14 @@ def run_no_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stoc
                     print(f'Search settings: baseline=run_episodes_no_baseline, discount_factor={discount_factor}, learn_rate={learn_rate}, hidden_dim={hidden_dim}, init_temp={init_temp}')
 
                     # initialize the environment
-                    env = gym.make('CartPole-v1')  # <---------- change this!
+                    env = GridworldEnv(shape=grid_shape)  # <---------- change this!
 
                     result = 0
 
                     for i in range(n_runs):
                         start_time = time()
 
-                        policy_model = PolicyNetwork(input_dim=4, hidden_dim=hidden_dim, output_dim=2)  # change input_ and output_dim for gridworld env
+                        policy_model = PolicyNetwork(input_dim=2, hidden_dim=hidden_dim, output_dim=4)  # change input_ and output_dim for gridworld env
                         seed = 40 + i
                         set_seeds(env, seed)
 
@@ -263,7 +264,7 @@ def run_no_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stoc
                     print(f'Done with search in {f"{h} hours, " if h else ""}{f"{m} minutes and " if m else ""}{s} seconds')
                     print(f'Average number of steps per episode: {result}')
 
-                    if result > best_result:
+                    if result < best_result:
                         best_result = result
                         best_settings['discount_factor'] = discount_factor
                         best_settings['learn_rate'] = learn_rate
@@ -282,6 +283,7 @@ def run_no_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stoc
     print()
     print(f'Best settings after completing grid search: {best_settings}')
 
-run_no_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes)
-run_learned_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes)
-run_selfcritic_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes)
+# Choose what you wann run by uncommenting
+#run_no_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes, grid_shape)
+#run_learned_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes, grid_shape)
+#run_selfcritic_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes, grid_shape)

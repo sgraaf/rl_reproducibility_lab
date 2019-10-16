@@ -54,8 +54,8 @@ def compute_reinforce_loss_with_learned_baseline(value_model, episode, discount_
     for s, a, log_p, s_next, reward in reversed(episode):
         G = reward + discount_factor * G
 
-        # state = np.unravel_index(s, env.shape)
-        baseline = value_model(torch.FloatTensor(s))
+        state = np.unravel_index(s, env.shape)
+        baseline = value_model(torch.FloatTensor(state))
 
         discounted_return_list.append(G - baseline)
         log_p_list.append(log_p)
@@ -77,8 +77,8 @@ def compute_value_loss(value_model, episode, discount_factor, env):
         G = reward + discount_factor * G
         returns.append(G)
 
-        # state = np.unravel_index(s, env.shape)
-        value_estimates.append(value_model(torch.FloatTensor(s)))
+        state = np.unravel_index(s, env.shape)
+        value_estimates.append(value_model(torch.FloatTensor(state)))
 
     value_estimates_tensor = torch.stack(value_estimates)
     returns_tensor = torch.FloatTensor(returns)
@@ -127,7 +127,6 @@ def compute_reinforce_loss_with_SC_baseline(model, episode, discount_factor, env
 
     for s, a, log_p, s_next, reward in reversed(episode):
         G = reward + discount_factor * G
-
         baseline = sample_greedy_return(model, env, discount_factor, s)
 
         discounted_return_list.append(G - baseline)
