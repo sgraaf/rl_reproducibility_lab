@@ -11,7 +11,7 @@ from utils import get_running_time, set_seeds
 from run_loss_functions import run_episodes_no_baseline, run_episodes_with_learned_baseline, run_episodes_with_SC_baseline
 
 stochasticity = 0.15  # <---------- change this!
-n_runs = 5
+n_runs = 5 # <---------- change this after you made sure it works (you created the nec. folders for the results)!
 n_episodes = 750
 grid_shape = [10, 10]
 
@@ -220,6 +220,6 @@ def run_no_baseline(stochasticity, n_runs, n_episodes, grid_shape):
     print(f'Done with runs in {f"{h} hours, " if h else ""}{f"{m} minutes and " if m else ""}{s} seconds')
 
 # Choose what you want to run by uncommenting
-run_no_baseline(stochasticity, n_runs, n_episodes, grid_shape)
+#run_no_baseline(stochasticity, n_runs, n_episodes, grid_shape)
 #run_learned_baseline(stochasticity, n_runs, n_episodes, grid_shape)
 #run_selfcritic_baseline(stochasticity, n_runs, n_episodes, grid_shape)
