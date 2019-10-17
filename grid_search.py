@@ -15,7 +15,7 @@ learn_rates = [1e-2, 1e-3, 1e-4]
 hidden_dims = [64, 128, 256]
 init_temps = [1.05, 1.1, 1.15]
 
-stochasticity = 0.0  # <---------- change this!
+stochasticity = 0.30  # <---------- change this!
 n_runs = 5
 n_episodes = 750
 grid_shape = [10, 10]
@@ -286,6 +286,6 @@ def run_no_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stoc
     print(f'Best settings after completing grid search: {best_settings}')
 
 # Choose what you wann run by uncommenting
-#run_no_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes, grid_shape)
+run_no_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes, grid_shape)
 #run_learned_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes, grid_shape)
 #run_selfcritic_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes, grid_shape)
