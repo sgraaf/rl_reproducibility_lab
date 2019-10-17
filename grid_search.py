@@ -46,7 +46,7 @@ def run_learned_baseline(discount_factors, learn_rates, hidden_dims, init_temps,
                             print(f'Search settings: baseline=run_episodes_with_learned_baseline, discount_factor={discount_factor}, learn_rate_policy={learn_rate_policy}, learn_rate_value={learn_rate_value}, hidden_dim_policy={hidden_dim_policy}, hidden_dim_value={hidden_dim_value}, init_temp={init_temp}')
 
                             # initialize the environment
-                            env = GridworldEnv([10, 10]) 
+                            env = gym.make('CartPole-v1') 
 
                             result = 0
 
@@ -117,8 +117,8 @@ def run_selfcritic_baseline(discount_factors, learn_rates, hidden_dims, init_tem
     # self-critic baseline
     best_result = 0
     best_settings = dict()
-    results_file = f'results/gridworld_s{stochasticity}_SC_baseline.csv'
-    best_settings_file = f'results/gridworld_s{stochasticity}_SC_baseline_best_settings.pkl'
+    results_file = f'results/s{stochasticity}_SC_baseline.csv'
+    best_settings_file = f'results/s{stochasticity}_SC_baseline_best_settings.pkl'
 
     with open(results_file, 'w') as f:
         f.write('discount_factor,learn_rate,hidden_dim,init_temp,result' + '\n')
@@ -138,14 +138,14 @@ def run_selfcritic_baseline(discount_factors, learn_rates, hidden_dims, init_tem
                     print(f'Search settings: baseline=run_episodes_with_SC_baseline, discount_factor={discount_factor}, learn_rate={learn_rate}, hidden_dim={hidden_dim}, init_temp={init_temp}')
 
                     # initialize the environment
-                    env = GridworldEnv([10, 10]) 
+                    env = gym.make('CartPole-v1') 
 
                     result = 0
 
                     for i in range(n_runs):
                         start_time = time()
 
-                        policy_model = PolicyNetwork(input_dim=2, hidden_dim=hidden_dim, output_dim=4)  # change input_ and output_dim for gridworld env
+                        policy_model = PolicyNetwork(input_dim=4, hidden_dim=hidden_dim, output_dim=2)  # change input_ and output_dim for gridworld env
                         seed = 40 + i
                         set_seeds(env, seed)
 
@@ -179,7 +179,7 @@ def run_selfcritic_baseline(discount_factors, learn_rates, hidden_dims, init_tem
                     print(f'Done with search in {f"{h} hours, " if h else ""}{f"{m} minutes and " if m else ""}{s} seconds')
                     print(f'Average number of steps per episode: {result}')
 
-                    if result < best_result:
+                    if result > best_result:
                         best_result = result
                         best_settings['discount_factor'] = discount_factor
                         best_settings['learn_rate'] = learn_rate
@@ -224,7 +224,7 @@ def run_no_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stoc
                     print(f'Search settings: baseline=run_episodes_no_baseline, discount_factor={discount_factor}, learn_rate={learn_rate}, hidden_dim={hidden_dim}, init_temp={init_temp}')
 
                     # initialize the environment
-                    env = GridworldEnv([10, 10])  # <---------- change this!
+                    env = gym.make('CartPole-v1')  # <---------- change this!
 
                     result = 0
 
@@ -287,4 +287,4 @@ def run_no_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stoc
 # Choose what to run by uncommenting
 #run_no_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes)
 #run_learned_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes)
-run_selfcritic_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes)
+#run_selfcritic_baseline(discount_factors, learn_rates, hidden_dims, init_temps, stochasticity, n_runs, n_episodes)
