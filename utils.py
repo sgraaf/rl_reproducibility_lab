@@ -77,7 +77,7 @@ def select_action(model, state, epoch, env, init_temperature=1.1, stochasticity=
     
     # Replace the drawn action by a random one in case the stochastic environment is active.
     if stochastic_transition_prob < stochasticity:
-        action = np.random.randint(0, 2)
+        action = np.random.randint(0, 4)
 
     return action, action_log_p
 
