@@ -10,7 +10,7 @@ from models import PolicyNetwork, ValueNetwork
 from utils import get_running_time, set_seeds
 from run_loss_functions import run_episodes_no_baseline, run_episodes_with_learned_baseline, run_episodes_with_SC_baseline
 
-stochasticity = 0.15  # <---------- change this!
+stochasticity = 0.0  # <---------- change this!
 n_runs = 5 # <---------- change this after you made sure it works (you created the nec. folders for the results)!
 n_episodes = 750
 
@@ -46,7 +46,7 @@ def run_learned_baseline(stochasticity, n_runs, n_episodes):
         start_time = time()
 
         policy_model = PolicyNetwork(input_dim=4, hidden_dim=hidden_dim_policy, output_dim=2)  # change input_ and output_dim for gridworld env
-        value_model = ValueNetwork(input_dim=2, hidden_dim=hidden_dim_value)  # change input_dim for gridworld env
+        value_model = ValueNetwork(input_dim=4, hidden_dim=hidden_dim_value)  # change input_dim for gridworld env
         seed = 40 + i
         set_seeds(env, seed)
 
